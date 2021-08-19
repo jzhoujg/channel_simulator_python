@@ -2,97 +2,93 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.special as spl
 import statsmodels.tsa.stattools as smt
-
+from scipy.fftpack import fft
 # 正弦波叠加法之经典谱的实现
 # 里面包括了六种仿真平坦衰落信道的方法- 等距离法、等面积法、 蒙特卡洛法、最小均方误差法、精确多普勒扩展法和Jakers仿真法
 
-def parameter_classical(Method_type,N_i,Variance,fc,phase,t) :
+def parameter_classical( Method_type , N_i, Variance, fc, phase) :
 #初始化
-     ln2 = np.log(2)
-     kc = 2*np.sqrt(2/ln2)
-     sigma = np.sqrt(Variance)
-     fmax = kc*fc
 
-     f_i = np.empty(N_i)
-     c_i = np.empty(N_i)
-     p_i = np.empty(N_i)
+    ln2 = np.log(2)
+    kc = 2*np.sqrt(2/ln2)
+    sigma = np.sqrt(Variance)
+    fc = np.sqrt(ln2)*fc
+    fmax = kc*fc
+    f_i = np.empty(N_i)
+    c_i = np.empty(N_i)
+    p_i = np.empty(N_i)
+    a = np.sqrt(ln2)
 
 # 生成固定的系数
-     if  Method_type == 'MED':
-          n = np.arange(1, N_i + 1)
-          f_i = fmax/(2 * N_i)*(2 * n -1)
-          c_i = sigma*np.sqrt(2)*(np.sqrt(spl.erf(n*kc*np.sqrt(ln2)/N_i)-spl.erf((n-1)*kc*np.sqrt(ln2)/N_i)))
-     elif Method_type == 'MEA':
-          n = np.arange(1, N_i + 1)
-          f_i = fc/np.sqrt(ln2)*spl.erfinv(n/N_i)
-          f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.999999)
-          c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
-     elif Method_type == 'MCM':
-          n = np.random.rand(N_i)
-          f_i = fmax*np.sin(np.pi*n/2)
-          c_i = sigma * np.sqrt(2/N_i)*np.ones(N_i)
-     elif Method_type == 'MSEM':
-          n = np.arange(1, N_i + 1)
-          f_i = fmax*(2*n-1)/(2*N_i)
-          T = 1/(2*fmax/N_i)
-          M = 5e3
-          tau = np.arange(0,T,1/M)
-          Jo = spl.jv(0,2*np.pi*fmax*tau)
-
-          c_i = []
-          for m in range(N_i):
-               c_i.append(2 * sigma * np.sqrt(1/T*(np.trapz(tau,Jo*np.cos(2*np.pi*f_i[m]*tau)))))
-     elif Method_type == 'MEDS' :
-          n = np.arange(2, N_i +2)
-          f_i = fc / np.sqrt(ln2) * spl.erfinv((2*n -1)/(2*N_i))
-          c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
-
-
+    if Method_type == 'MED':
+        n = np.arange(1, N_i + 1)
+        f_i = fmax / (2 * N_i) * (2 * n - 1)
+        c_i = sigma*np.sqrt(2)*(np.sqrt(spl.erf(n*kc*np.sqrt(ln2)/N_i)-spl.erf((n-1)*kc*np.sqrt(ln2)/N_i)))
+    elif Method_type == 'MEA':
+        n = np.arange(1, N_i+1)
+        f_i = fc/np.sqrt(ln2)*spl.erfinv(n/N_i)
+        f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.9999999)
+        c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
+    elif Method_type == 'MEDS':
+        n = np.arange(1, N_i + 1)
+        f_i = fc/a*spl.erfinv((2*n -1)/(N_i*2))
+        c_i = sigma * np.sqrt(2/N_i) *np.ones(N_i)
 
 # 生成相位
-     if phase == 'rand':
-          p_i = 2*np.pi* np.random.rand(N_i)
-     u = []
+    if phase == 'rand':
+      p_i = 2 * np.pi * np.random.rand(N_i)
 
-     for i in t:
-          temp = 0
-          for f,c,p in zip(f_i,c_i,p_i):
-               temp += c*np.cos(2*np.pi*f*i+p)
-          u.append(temp)
+    # u = []
 
-     return f_i,c_i,p_i
+    # for i in t:
+    #   temp = 0
+    #   for f,c,p in zip(f_i,c_i,p_i):
+    #        temp += c*np.cos(2*np.pi*f*i+p)
+    #   u.append(temp)
 
-
-def generate_Gaussian_process(f_i,c_i,p_i):
-
-     u = []
-     for i in t:
-          temp = 0
-          for f,c,p in zip(f_i,c_i,p_i):
-               temp += c*np.cos(2*np.pi*f*i+p)
-          u.append(temp)
+    return f_i,c_i,p_i
 
 
 
-     return np.array(u)
+# def generate_Gaussian_process(f_i,c_i,p_i,t):
+#
+#      u = []
+#      for i in t:
+#           temp = 0
+#           for f,c,p in zip(f_i,c_i,p_i):
+#                temp += c*np.cos(2*np.pi*f*i+p)
+#           u.append(temp)
+#
+#
+#
+#      return np.array(u)
 
 
 
-# 生成u1、u2
-delta_t = 0.01/100
-#theta_c = 40
-T_s = 0.097
-t = np.arange(0,T_s,delta_t)
 var = 1
 N_i = 32
 f_max = 91
+Tau_max = N_i/2/f_max*10
+Tau_int = 0.00001
+Tau = np.arange(0,Tau_max,Tau_int)
+# 生成高斯过程
+f1,c1,p1 = parameter_classical('MEA',N_i,var,f_max,'rand')
+Gaussian_Process = np.array([])
 
+for i in Tau:
+     Gaussian_Process = np.append(Gaussian_Process,sum(c1*np.cos(2*np.pi*f1*i + p1)))
 
-
-# 生成两个高斯过程
-f1,c1,p1 = parameter_classical('MED',N_i,var,f_max,'rand',t)
-u1 = generate_Gaussian_process(f1,c1,p1)
-print(u1)
+# plt.figure()
+# plt.plot(Tau,Gaussian_Process)
+# plt.show()
+#将序列信号变成离散的谱信号
+L = len(Gaussian_Process)# 信号长度
+N = np.power(np.ceil(np.log2(L)),2) # 下一个最近二次幂
+res = fft(Gaussian_Process,int(N))
+print(res)
+h = [i for i in range(int(N))]
+plt.plot(h[:int(N//10)],np.power(abs(res)[:int(N//10)],2)/N)
+plt.show()
 
 # f2,c2,p2 = parameter_classical('MEA',N_i,var,f_max,'rand',t)
 # u2 = generate_Gaussian_process(f2,c2,p2)
