@@ -23,7 +23,8 @@ def rever_fun_2(x):
     return inversefunc(fun_2_order,y_values=x)
 
 def rever_fun_2_poly(x):
-    return 0.3517 * power(x,5) - 1.525 * power(x,4) + 2.567 *power(x,3) -2.092 *power(x,2) + 1.828 *power(x,1)- 0.996
+    x = x* 1.1038642916983523
+    return (0.3517 * power(x,5) - 1.525 * power(x,4) + 2.567 *power(x,3) -2.092 *power(x,2) + 1.828 *power(x,1)- 0.996)
 
 
 def y3(x):
@@ -33,8 +34,35 @@ def fun_3_order(x):
     return quad(y3,-1.000000001,x-0.00001)[0]
 
 def rever_fun_3(x):
+    x  = x *1.1507147789240784
     return inversefunc(fun_3_order,y_values=x)
 
+
+def Butterworth_Spectrum(x):
+    var = 1
+    fd = 100
+    return 2 * var / (np.pi * fd) * np.power(fd, 6) / (np.power(fd, 6) + np.power(x, 6))
+
+def x_Butterworth_Spectrum(x):
+    return x *x* Butterworth_Spectrum(x)
+
+def belta_theory(fd):
+    B1 = quad(x_Butterworth_Spectrum,-fd,fd)[0]
+    B2 = quad(Butterworth_Spectrum,-fd,fd)[0]
+    return np.sqrt(B1/B2)
+
+
+
+print(belta_theory(100))
+
+
+def belta_theoty(r):
+    if r == 1:
+        return 52.27232008770633
+    elif r == 2:
+        return 53.02339386599589
+    elif r == 3 :
+        return 53.821392087678994
 
 
 # fd = 100

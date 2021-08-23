@@ -24,11 +24,13 @@ def parameter_classical( Method_type , N_i, Variance, fc, phase) :
         n = np.arange(1, N_i + 1)
         f_i = fmax / (2 * N_i) * (2 * n - 1)
         c_i = sigma*np.sqrt(2)*(np.sqrt(spl.erf(n*kc*np.sqrt(ln2)/N_i)-spl.erf((n-1)*kc*np.sqrt(ln2)/N_i)))
+
     elif Method_type == 'MEA':
         n = np.arange(1, N_i+1)
         f_i = fc/np.sqrt(ln2)*spl.erfinv(n/N_i)
         f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.9999999)
         c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
+
     elif Method_type == 'MEDS':
         n = np.arange(1, N_i + 1)
         f_i = fc/a*spl.erfinv((2*n -1)/(N_i*2))

@@ -62,15 +62,22 @@ def parameter_classical(Method_type,N_i,Variance,fmax,phase) :
 
      return f_i,c_i,p_i
 
+
+def Experiment_Belta(ci,fi,var):
+     return np.sqrt(sum(np.power(ci,2)*np.power(fi,2))/2/var)
+
 var = 1
-N_i = 50
+N_i = 20
 f_max = 100
 # 生成两个高斯过程
 f1,c1,p1 = parameter_classical('MEA',N_i,var,f_max,'rand')
+print(Experiment_Belta(c1,f1,var),f_max/np.sqrt(2))
+
+
 
 # 采样
-Tau_max = (N_i/2/f_max)# 总时长
-Tau_int = 1/(f_max*100) # 采样频率
+Tau_max = (N_i/2/f_max)*1000# 总时长
+Tau_int = 1/(f_max*10) # 采样频率
 Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
 N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
 
@@ -87,9 +94,9 @@ h = np.array([i for i in range(L)])
 f = np.arange(0,f_max,0.01)
 S_uiui = var/(f_max*np.sqrt(1 - np.power(f/f_max,2)))
 
-#plt.plot(h[:int(N/5)]*10*f_max/N,abs(res)[:int(N/5)]/max(res))
-plt.psd(Gaussian_Procss,NFFT=L)
-# plt.plot(f,S_uiui/max(S_uiui))
+plt.plot(h[:int(N)]*10*f_max/N,abs(res)[:int(N)]/max(res))
+# plt.psd(Gaussian_Procss,NFFT=L)
+#plt.plot(f,res/max(S_uiui))
 plt.show()
 
 # f2,c2,p2 = parameter_classical('MEA',N_i,var,f_max,'rand',t)

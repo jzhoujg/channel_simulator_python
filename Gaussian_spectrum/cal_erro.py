@@ -5,7 +5,7 @@ import scipy.special as spl
 import statsmodels.tsa.stattools as smt
 
 # 正弦波叠加法之经典谱的实现
-# 里面包括了六种仿真平坦衰落信道的方法- 等距离法、等面积法、 蒙特卡洛法、最小均方误差法、精确多普勒扩展法和Jakers仿真法
+# 里面包括了六种仿真平坦衰落信道的方法- 等距离法、等面积法、蒙特卡洛法、最小均方误差法、精确多普勒扩展法和Jakers仿真法
 
 def parameter_classical( Method_type , N_i, Variance, fc, phase) :
 #初始化
@@ -34,7 +34,6 @@ def parameter_classical( Method_type , N_i, Variance, fc, phase) :
         n = np.arange(1, N_i + 1)
         f_i = fc/a*spl.erfinv((2*n -1)/(N_i*2))
         c_i = sigma * np.sqrt(2/N_i) *np.ones(N_i)
-
 
 
 # 生成相位
@@ -127,7 +126,7 @@ plt.plot(N,err_meds,label = 'MEDS',linewidth=2)
 # plt.plot(N,res,label = 'MCM', linestyle = "--",color = 'blue')
 plt.xlabel("N_i",fontsize = 14)# 设置横轴标签
 plt.ylabel("err",fontsize = 14)# 设置纵轴标签
-plt.legend(loc="upper right",fontsize = 14)
+    plt.legend(loc="upper right",fontsize = 14)
 #设置刻度标记的大小
 plt.tick_params(axis='both',labelsize = 14)
 plt.axis([1,50,0,0.008])

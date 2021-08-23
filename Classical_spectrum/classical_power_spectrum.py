@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 var = 1
 fmax =100
-pi =     np.pi
+pi = np.pi
 
 f = np.arange(-fmax,fmax,0.01)
 

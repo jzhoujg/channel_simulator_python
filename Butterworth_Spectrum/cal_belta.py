@@ -62,35 +62,46 @@ N_i = 50
 f_max = 100
 
 # 生成一个高斯过程
-f1,c1,p1 = parameter_butterworth('MEA',N_i,var,f_max,'rand',1)
-
-print(Butterworth_Belta(c1,f1,var),52.27232008770633)
-# 采样
-Tau_max = (N_i/2/f_max)*10 # 总时长
-Tau_int = 1/(10*f_max) # 采样频率
-Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
-N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
-
-# 采样的序列
-Gaussian_Procss = np.array([],dtype=np.float64)
-for i in Tau:
-     Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
-L = len(Gaussian_Procss) # 信号长度
-
-#N = np.power(2,np.ceil(np.log2(L))) # 下一个最近二次幂
-res = np.empty(1,dtype=np.float64)
-res = abs(fft(Gaussian_Procss,L))
-h = np.array([i for i in range(int(N))])
-# plt.psd(Gaussian_Procss,NFFT=L)
+# f1,c1,p1 = parameter_butterworth('MEA',N_i,var,f_max,'rand',1)
+#
+# print(Butterworth_Belta(c1,f1,var),52.27232008770633)
+RES = []
+N = [i for i in range(5,N_i)]
+for j in N:
+     f1, c1, p1 = parameter_butterworth('MEA', j, var, f_max, 'rand', 3)
+     RES.append(Butterworth_Belta(c1,f1,var))
+std = 53.821392087678994* np.ones(len(N))
+RES = np.array(RES)
 plt.figure()
-plt.plot(h[:int(N)]*10*f_max/N,res[:int(N)]/max(res), label = 'M = 1')
-plt.title('psd')
+plt.plot(N,std/100,label = 'standard')
+plt.plot(N,RES/100,label = 'MEA',linestyle = '--')
+plt.title("Third -Order Butterworth Spectrum")
 plt.legend(loc="best",fontsize = 14)
+plt.xlabel('N')
 plt.show()
 
 
 
 
+# 采样
+# Tau_max = (N_i/2/f_max)*10 # 总时长
+# Tau_int = 1/(10*f_max) # 采样频率
+# Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
+# N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
+#
+# # 采样的序列
+# Gaussian_Procss = np.array([],dtype=np.float64)
+# for i in Tau:
+#      Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
+# L = len(Gaussian_Procss) # 信号长度
+
+#N = np.power(2,np.ceil(np.log2(L))) # 下一个最近二次幂
+# res = np.empty(1,dtype=np.float64)
+# res = abs(fft(Gaussian_Procss,L))
+# h = np.array([i for i in range(int(N))])
+# # plt.psd(Gaussian_Procss,NFFT=L)
+# plt.plot(h[:int(N)]*10*f_max/N,res[:int(N)]/max(res))
+# plt.show()
 
 
 
