@@ -63,8 +63,9 @@ f_max = 100
 
 # 生成一个高斯过程
 # f1,c1,p1 = parameter_butterworth('MEA',N_i,var,f_max,'rand',1)
-#
 # print(Butterworth_Belta(c1,f1,var),52.27232008770633)
+
+
 RES = []
 N = [i for i in range(5,N_i)]
 for j in N:
