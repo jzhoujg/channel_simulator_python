@@ -76,8 +76,8 @@ print(Experiment_Belta(c1,f1,var),f_max/np.sqrt(2))
 
 
 # 采样
-Tau_max = (N_i/2/f_max)*1000# 总时长
-Tau_int = 1/(f_max*10) # 采样频率
+Tau_max = (N_i/2/f_max)# 总时长
+Tau_int = 1/(f_max*1000) # 采样频率
 Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
 N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
 
@@ -86,17 +86,27 @@ Gaussian_Procss = np.array([])
 for i in Tau:
      Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
 
-L = len(Gaussian_Procss) # 信号长度
+R_rei_theory =var * spl.jv(0,2*np.pi*f_max*Tau) # 理论的自相关函数
+acf = smt.acf(Gaussian_Procss,nlags = len(Gaussian_Procss))
+plt.plot(Tau,acf,label = 'Experiment')
+plt.plot(Tau,R_rei_theory,color = 'red',linestyle = '--',label = 'Theory')
+plt.title("Classical Doppler Spectrum ACF ")
+plt.xlabel("/s")# 设置横轴标签
+plt.ylabel("")# 设置纵轴标签
+plt.legend(loc="upper right")
+# L = len(Gaussian_Procss) # 信号长度
 # N =np.power(2,np.ceil(np.log2(L))) # 下一个最近二次幂
-res = fft(Gaussian_Procss,L)
-h = np.array([i for i in range(L)])
 
-f = np.arange(0,f_max,0.01)
-S_uiui = var/(f_max*np.sqrt(1 - np.power(f/f_max,2)))
 
-plt.plot(h[:int(N)]*10*f_max/N,abs(res)[:int(N)]/max(res))
+# res = fft(Gaussian_Procss,L)
+# h = np.array([i for i in range(L)])
+#
+# f = np.arange(0,f_max,0.01)
+# S_uiui = var/(f_max*np.sqrt(1 - np.power(f/f_max,2)))
+
+# plt.plot(h[:int(N)]*10*f_max/N,abs(res)[:int(N)]/max(res))
 # plt.psd(Gaussian_Procss,NFFT=L)
-#plt.plot(f,res/max(S_uiui))
+# plt.plot(f,res/max(S_uiui))
 plt.show()
 
 # f2,c2,p2 = parameter_classical('MEA',N_i,var,f_max,'rand',t)

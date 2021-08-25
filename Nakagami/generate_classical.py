@@ -10,7 +10,6 @@ from scipy.fftpack import fft
 def parameter_classical(Method_type,N_i,Variance,fmax,phase) :
 #初始化
      sigma = np.sqrt(Variance)
-
      f_max = fmax
      fmax += (np.random.rand(1)-0.5)/10
      f_i = np.empty(N_i)
@@ -49,7 +48,7 @@ def parameter_classical(Method_type,N_i,Variance,fmax,phase) :
 
 
      t_int = 0.0001
-     t_max = 1/f_max
+     t_max = N_i/2/f_max
      t = np.arange(0,t_max,t_int)
 # 生成相位
      if phase == 'rand':
@@ -59,7 +58,7 @@ def parameter_classical(Method_type,N_i,Variance,fmax,phase) :
      u = []
      for i in t :
           u.append(sum(c_i*np.cos(2 * np.pi * f_i * i + p_i)))
-     return np.array(u)
+     return np.array(u),t
 
 
 def Experiment_Belta(ci,fi,var):
