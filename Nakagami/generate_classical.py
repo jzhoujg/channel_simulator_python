@@ -7,7 +7,7 @@ from scipy.fftpack import fft
 # 正弦波叠加法之经典谱的实现
 # 里面包括了六种仿真平坦衰落信道的方法- 等距离法、等面积法、 蒙特卡洛法、最小均方误差法、精确多普勒扩展法和Jakers仿真法
 
-def parameter_classical(Method_type,N_i,Variance,fmax,phase) :
+def parameter_classical(Method_type,N_i,Variance,fmax,phase,num = 1000) :
 #初始化
      sigma = np.sqrt(Variance)
      f_max = fmax
@@ -47,8 +47,8 @@ def parameter_classical(Method_type,N_i,Variance,fmax,phase) :
           c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
 
 
-     t_int = 0.0001
      t_max = N_i/2/f_max
+     t_int = t_max/num
      t = np.arange(0,t_max,t_int)
 # 生成相位
      if phase == 'rand':

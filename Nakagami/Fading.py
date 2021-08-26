@@ -23,27 +23,24 @@ acf = smt.acf(ray,nlags= len(t))
 R_rei_theory =var * spl.jv(0,2*np.pi*f_max*t) # 理论的自相关函数
 
 # 生成Nakagami 分布u
-# Brute Force 原始模型 m = 2
-
+##  Brute Force 原始模型 m = 2
 R = np.sqrt(power(u1,2)+power(u2,2)+power(u3,2)+power(u4,2))
 acf_bru1 = smt.acf(R,nlags= len(t))
 
+## Brute Force 相位修正模型 m = 2
+for i in range(len(u1)):
+    if u1[i] < 0 : R[i] = -R[i]
+acf_bru2 = smt.acf(R,nlags= len(t))
 
-
-
-
-
-
-
+## Brute Force 精确小数模型
 
 
 
 # 画图
 plt.figure()
-
 plt.plot(t,acf_bru1,label = 'Experiment')
 plt.plot(t,R_rei_theory,color = 'red',linestyle = '--',label = 'Theory')
-plt.title("Nakagami Fading ACF_B1 ")
+plt.title("Nakagami Fading ACF_B2 ")
 plt.xlabel("/s")# 设置横轴标签
 plt.ylabel("")# 设置纵轴标签
 plt.legend(loc="upper right")
