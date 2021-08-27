@@ -71,6 +71,9 @@ N_i = 20
 f_max = 100
 # 生成两个高斯过程
 f1,c1,p1 = parameter_classical('MEA',N_i,var,f_max,'rand')
+
+
+print(f1,c1,p1)
 print(Experiment_Belta(c1,f1,var),f_max/np.sqrt(2))
 
 

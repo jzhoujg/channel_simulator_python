@@ -11,6 +11,7 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
     ##  至少需要两个高斯
     ## q1为整数部分
     q_1 = int(math.floor(m))
+
     belta = m - q_1 + np.sqrt((q_1-m)*(m-q_1-1))
     gamma = m - q_1 - np.sqrt((q_1-m)*(m-q_1-1))
 
@@ -20,13 +21,13 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
     if q_1:
         U_q = np.zeros([num,q_1*2])
         for i in range(2*q_1):
-            U_q[:,i], _ = parameter_classical('MEA',N_i,var,f_max,'rand',num)
+            U_q[:, i], _ = parameter_classical('MEA',N_i,var,f_max,'rand',num)
 
     ## 生成小数部分
 
     U_p = np.empty([num,2])
-    U_p[:,0], t = parameter_classical('MEA',N_i,var,f_max,'rand',num)
-    U_p[:,1], _ = parameter_classical('MEA',N_i,var,f_max,'rand',num)
+    U_p[:, 0], t = parameter_classical('MEA',N_i,var,f_max,'rand',num)
+    U_p[:, 1], _ = parameter_classical('MEA',N_i,var,f_max,'rand',num)
 
     # 生成Nakagami 分布u
     ##  Brute Force 原始模型 m = 2
@@ -53,22 +54,26 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
         if U_p[i,0] < 0:
             R[i] = -R[i]
 
-
     return np.array(R),t
 
 
 # 生成瑞利过程
+print()
+
+
+
 f_max = 100
 var = 1
-m = 0.75
+m = 0.3
 naka, t = Generate_Nakagami(f_max=f_max, var=1, m=m)
-acf = smt.acf(naka,nlags= len(t))
-R_rei_theory =var * spl.jv(0,2*np.pi*f_max*t) # 理论的自相关函数
+acf = smt.acf(naka, nlags=len(t))
+R_rei_theory = var * spl.jv(0,2*np.pi*f_max*t) # 理论的自相关函数
 # 画图
+
 plt.figure()
-plt.plot(t,acf,label = 'Experiment')
-plt.plot(t,R_rei_theory,color = 'red',linestyle = '--',label = 'Theory')
-plt.title("Nakagami Fading ACF m = 0.75 ")
+plt.plot(t, acf, label='Experiment')
+plt.plot(t, R_rei_theory, color = 'red',linestyle = '--',label = 'Theory')
+plt.title("Nakagami Fading ACF m = "+str(m))
 plt.xlabel("/s")# 设置横轴标签
 plt.ylabel("")# 设置纵轴标签
 plt.legend(loc="upper right")
