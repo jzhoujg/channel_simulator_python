@@ -6,6 +6,8 @@ import scipy.special as spl
 from numpy import power
 import math
 
+def Generate_Gaussian():
+
 def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
     # 根据m计算需要的高斯衰落的数量，在这里默认的是平坦衰落的过程
     ##  至少需要两个高斯

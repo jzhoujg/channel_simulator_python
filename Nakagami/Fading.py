@@ -13,9 +13,9 @@ f_max = 100
 
 # 生成高斯衰落
 u1,t= parameter_classical('MEA',N_i,var,f_max,'rand')
-u2,t= parameter_classical('MEA',N_i,var,f_max,'rand')
-u3,t = parameter_classical('MEA',N_i,var,f_max,'rand')
-u4,t = parameter_classical('MEA',N_i,var,f_max,'rand')
+u2, _ = parameter_classical('MEA',N_i,var,f_max,'rand')
+u3, _ = parameter_classical('MEA',N_i,var,f_max,'rand')
+u4, _ = parameter_classical('MEA', N_i, var, f_max, 'rand')
 
 # 生成瑞利过程
 ray = u1 + u2*1j
