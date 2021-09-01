@@ -21,19 +21,17 @@ def parameter_rounded(Method_type,N_i,Variance,fd,phase) :
           n = np.arange(1, N_i + 1)
           c_i = sigma * np.sqrt(2 / N_i) * np.ones(N_i)
           for i in range(N_i):
-               f_i = np.append(f_i,rounded_inverse(var/2*(1+n[i]/N_i)))
-
+               f_i = np.append(f_i,(var/2*(1+n[i]/N_i)))
 # 生成相位
      if phase == 'rand':
           p_i = 2*np.pi* np.random.rand(N_i)
 
-
      return f_i,c_i,p_i
 
 
-def Butterworth_Belta(ci,fi,var):
+# 计算多普勒扩展值
+def Rounded_Belta(ci,fi,var):
      return np.sqrt(sum(np.power(ci,2)*np.power(fi,2))/2/var)
-
 
 var = 1
 N_i = 32
