@@ -25,7 +25,6 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
             U_q[:, i], _ = parameter_classical('MEA',N_i,var,f_max,'rand',num)
 
     ## 生成小数部分
-
     U_p = np.empty([num,2])
     U_p[:, 0], t = parameter_classical('MEA',N_i,var,f_max,'rand',num)
     U_p[:, 1], _ = parameter_classical('MEA',N_i,var,f_max,'rand',num)
