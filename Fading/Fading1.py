@@ -12,12 +12,9 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
     # 根据m计算需要的高斯衰落的数量，在这里默认的是平坦衰落的过程
     ##  至少需要两个高斯
     ## q1为整数部分
-
     q_1 = int(math.floor(m))
     belta = m - q_1 + np.sqrt((q_1-m)*(m-q_1-1))
     gamma = m - q_1 - np.sqrt((q_1-m)*(m-q_1-1))
-
-
     # 生成高斯衰落
     num = 2000
     ## 生成整数部分
@@ -58,7 +55,6 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
             R[i] = -R[i]
 
     return np.array(R),t
-
 # 生成瑞利过程
 f_max = 100
 var = 1

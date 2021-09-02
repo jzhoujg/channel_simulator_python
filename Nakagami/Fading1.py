@@ -6,7 +6,7 @@ import scipy.special as spl
 from numpy import power
 import math
 
-def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
+def Generate_Nakagami(m=0.7,var=1,N_i=20,f_max=100):
     # 根据m计算需要的高斯衰落的数量，在这里默认的是平坦衰落的过程
     ##  至少需要两个高斯
     ## q1为整数部分
@@ -14,7 +14,7 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
     q_1 = int(math.floor(m))
     belta = m - q_1 + np.sqrt((q_1-m)*(m-q_1-1))
     gamma = m - q_1 - np.sqrt((q_1-m)*(m-q_1-1))
-
+    print(belta,gamma)
 
     # 生成高斯衰落
     num = 2000
@@ -54,22 +54,33 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
         if U_p[i,0] < 0:
             R[i] = -R[i]
 
-    return np.array(R),t
+    return np.array(R),t,gamma,belta
 
 # 生成瑞利过程
 f_max = 100
 var = 1
-m = 0.3
-naka, t = Generate_Nakagami(f_max=f_max, var=1, m=m)
-acf = smt.acf(naka, nlags=len(t))
-R_rei_theory = var * spl.jv(0,2*np.pi*f_max*t) # 理论的自相关函数
-# 画图
+gamma = []
+belta = []
+n_12 = np.arange(0,5,0.01)
+for m in n_12:
+    _, _, a, b = Generate_Nakagami(f_max=f_max, var=1, m=m)
+    gamma.append(a)
+    belta.append(b)
 
 plt.figure()
-plt.plot(t, acf, label='Experiment')
-plt.plot(t, R_rei_theory, color = 'red',linestyle = '--',label = 'Theory')
-plt.title("Nakagami Fading ACF m = "+str(m))
-plt.xlabel("/s")# 设置横轴标签
-plt.ylabel("")# 设置纵轴标签
-plt.legend(loc="upper right")
+plt.plot(n_12,gamma)
+plt.plot(n_12,belta)
 plt.show()
+print(n)
+# acf = smt.acf(naka, nlags=len(t))
+# R_rei_theory = var * spl.jv(0,2*np.pi*f_max*t) # 理论的自相关函数
+# # 画图
+#
+# plt.figure()
+# plt.plot(t, acf, label='Experiment')
+# plt.plot(t, R_rei_theory, color = 'red',linestyle = '--',label = 'Theory')
+# plt.title("Nakagami Fading ACF m = "+str(m))
+# plt.xlabel("/s")# 设置横轴标签
+# plt.ylabel("")# 设置纵轴标签
+# plt.legend(loc="upper right")
+# plt.show()
