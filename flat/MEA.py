@@ -38,13 +38,13 @@ f_max = 100
 
 # 生成一个高斯过程
 f1,c1,p1 = parameter_rounded('MEA',N_i,var,f_max,'rand')
-# plt.figure()
-# plt.stem(f1,c1/max(c1))
-# plt.title('psd')
-# plt.legend(loc="best",fontsize = 14)
-# plt.xlabel("frequency/Hz")# 设置横轴标签
-# plt.ylabel("p/w/Hz")# 设置纵轴标签
-# plt.show()
+plt.figure()
+plt.stem(f1,c1/max(c1))
+plt.title('psd')
+plt.legend(loc="best",fontsize = 14)
+plt.xlabel("frequency/Hz")# 设置横轴标签
+plt.ylabel("p/w/Hz")# 设置纵轴标签
+plt.show()
 #
 # print(Butterworth_Belta(c1,f1,var),52.27232008770633)
 # # 采样

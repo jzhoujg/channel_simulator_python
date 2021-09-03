@@ -15,4 +15,12 @@ def rounded_quad(x,fd=100):
 def rounded_inverse(x,fd):
     return inversefunc(rounded_quad, y_values=x)
 
+def belta_cal(f):
+    return (f**2) * rounded(f)
+
+def belta_theory(fd):
+    return quad(belta_cal,-fd,fd)[0]
+
+print(np.sqrt(belta_theory(100)))
+
 

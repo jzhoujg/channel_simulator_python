@@ -7,6 +7,8 @@ from numpy import power
 import math
 
 def Generate_Gaussian():
+    pass
+
 
 def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
     # 根据m计算需要的高斯衰落的数量，在这里默认的是平坦衰落的过程
@@ -55,11 +57,16 @@ def Generate_Nakagami(m=1.25,var=1,N_i=20,f_max=100):
             R[i] = -R[i]
 
     return np.array(R),t
+
+def Generate_Nakagami2(m=1.25,var=1,N_i=20,f_max=100):
+    Real, _ = Generate_Nakagami(0.5*m,var,N_i,f_max)
+    Imag, t = Generate_Nakagami(0.5*m,var,N_i,f_max)
+    return Real+Imag*1j,t
 # 生成瑞利过程
 f_max = 100
 var = 1
-m = 0.3
-naka, t = Generate_Nakagami(f_max=f_max, var=1, m=m)
+m = 1.25
+naka, t = Generate_Nakagami2(f_max=f_max, var=1, m=m)
 acf = smt.acf(naka, nlags=len(t))
 R_rei_theory = var * spl.jv(0,2*np.pi*f_max*t) # 理论的自相关函数
 # 画图

@@ -17,8 +17,6 @@ def parameter_butterworth(Method_type,N_i,Variance,fd,phase,r) :
      p_i = np.empty(N_i,dtype=np.float64)
      pi = np.pi
 
-
-
 # 生成固定的系数
      if Method_type == 'MEA' and r == 1 :
 
