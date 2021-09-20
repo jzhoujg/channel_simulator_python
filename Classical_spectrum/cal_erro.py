@@ -57,7 +57,7 @@ def parameter_classical(Method_type,N_i,Variance,fmax,phase,t) :
                temp += c*np.cos(2*np.pi*f*i+p)
           u.append(temp)
 
-     return f_i,c_i,p_i
+     return f_i,c_i,p_i,u
 
 
 
@@ -116,8 +116,6 @@ for k in range(1,10):
     res += err[k]
 
 res = res /10
-
-
 
 
 plt.title("ERRO")

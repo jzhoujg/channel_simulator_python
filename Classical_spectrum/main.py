@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.special as spl
 import statsmodels.tsa.stattools as smt
 from scipy.fftpack import fft
+import  matplotlib
 
 # 正弦波叠加法之经典谱的实现
 # 里面包括了六种仿真平坦衰落信道的方法- 等距离法、等面积法、 蒙特卡洛法、最小均方误差法、精确多普勒扩展法和Jakers仿真法
@@ -75,11 +76,9 @@ f1,c1,p1 = parameter_classical('MEA',N_i,var,f_max,'rand')
 print(f1,c1,p1)
 print(Experiment_Belta(c1,f1,var),f_max/np.sqrt(2))
 
-
-
 # 采样
 Tau_max = (N_i/2/f_max)# 总时长
-Tau_int = 1/(f_max*1000) # 采样频率
+Tau_int = 1/(15*f_max) # 采样频率
 Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
 N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
 
@@ -88,14 +87,19 @@ Gaussian_Procss = np.array([])
 for i in Tau:
      Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
 
-R_rei_theory =var * spl.jv(0,2*np.pi*f_max*Tau) # 理论的自相关函数
-acf = smt.acf(Gaussian_Procss,nlags = len(Gaussian_Procss))
-plt.plot(Tau,acf,label = 'Experiment')
-plt.plot(Tau,R_rei_theory,color = 'red',linestyle = '--',label = 'Theory')
-plt.title("Classical Doppler Spectrum ACF ")
-plt.xlabel("/s")# 设置横轴标签
-plt.ylabel("")# 设置纵轴标签
-plt.legend(loc="upper right")
+nfft = 512
+plt.figure()
+plt.psd(x=Gaussian_Procss,Fs = 1/Tau_int,sides='twosided',NFFT=nfft,window=np.blackman(nfft))
+plt.show()
+# R_rei_theory =var * spl.jv(0,2*np.pi*f_max*Tau) # 理论的自相关函数
+# acf = smt.acf(Gaussian_Procss,nlags = len(Gaussian_Procss))
+#
+# plt.plot(Tau,acf,label = 'Experiment')
+# plt.plot(Tau,R_rei_theory,color = 'red',linestyle = '--',label = 'Theory')
+# plt.title("Classical Doppler Spectrum ACF ")
+# plt.xlabel("/s")# 设置横轴标签
+# plt.ylabel("")# 设置纵轴标签
+# plt.legend(loc="upper right")
 # L = len(Gaussian_Procss) # 信号长度
 # N =np.power(2,np.ceil(np.log2(L))) # 下一个最近二次幂
 

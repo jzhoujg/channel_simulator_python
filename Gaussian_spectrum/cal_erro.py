@@ -28,8 +28,9 @@ def parameter_classical( Method_type , N_i, Variance, fc, phase) :
     elif Method_type == 'MEA':
         n = np.arange(1, N_i+1)
         f_i = fc/np.sqrt(ln2)*spl.erfinv(n/N_i)
-        f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.9999999)
-        c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
+        f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.9999999999)
+        c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)*np.sqrt(N_i/(N_i-1))
+        c_i[N_i - 1] = 0
     elif Method_type == 'MEDS':
         n = np.arange(1, N_i + 1)
         f_i = fc/a*spl.erfinv((2*n -1)/(N_i*2))
@@ -87,47 +88,75 @@ def generate_erro(N_i,Method):
     #return np.trapz(tau,np.power((R_rei_theory-R_rei_exper),2))/Tau_max
     return  Tau_int*sum(np.power(R_rei_theory-R_rei_exper,2))/Tau_max
 
+var = 1
+N_i = 20
+f_max = 50
+# Tau_max = N_i/2/f_max*10
+# Tau_int = 0.00001
+# Tau = np.arange(0,Tau_max,Tau_int)
+# 生成高斯过程
+f1,c1,p1 = parameter_classical('MEA',N_i,var,f_max,'rand')
+
+
+
+# 采样
+Tau_max = (N_i/2/f_max)# 总时长
+Tau_int = 1/(15*f_max) # 采样频率
+Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
+N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
+
+# 采样的序列
+Gaussian_Procss = np.array([])
+for i in Tau:
+     Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
+
+nfft = 256
+plt.figure()
+plt.psd(x=Gaussian_Procss,Fs = 1/Tau_int,sides='twosided',NFFT=nfft,window=np.blackman(nfft))
+plt.show()
+
+
 # a = generate_erro(10,'MED')
 
-err_med = np.array([])
-err_mea = np.array([])
-err_meds = np.array([])
-# err_meds = []
-# err_mcm = []
-# err = []
-
-N = [i for i in range(1,50)]
-# N = [2*i -1 for i in range(3,25)]
-for i in N:
-    err_med = np.append(err_med,generate_erro(i,'MED'))
-    err_mea = np.append(err_mea,generate_erro(i,'MEA'))
-    err_meds = np.append(err_meds, generate_erro(i, 'MEDS'))
-
-    # err_mcm.append(generate_erro(i,'MCM'))
-    # err_meds.append(generate_erro(i, 'MEDS'))
-
-    # err.append(err_mcm)
-    # err_mcm = []
-
-# print(err)
-# res = err[0]
-# err = np.array(err)
-# print(err)
-# for k in range(1,10):
-#     res += err[k]
+# err_med = np.array([])
+# err_mea = np.array([])
+# err_meds = np.array([])
+# # err_meds = []
+# # err_mcm = []
+# # err = []
 #
-# res = res /10
-plt.figure()
-plt.title("ERRO")
-plt.grid()
-plt.plot(N,err_med,label = 'MED',linewidth=2)
-plt.plot(N,err_mea,label = 'MEA',linewidth=2)
-plt.plot(N,err_meds,label = 'MEDS',linewidth=2)
-# plt.plot(N,res,label = 'MCM', linestyle = "--",color = 'blue')
-plt.xlabel("N_i",fontsize = 14)# 设置横轴标签
-plt.ylabel("err",fontsize = 14)# 设置纵轴标签
-    plt.legend(loc="upper right",fontsize = 14)
-#设置刻度标记的大小
-plt.tick_params(axis='both',labelsize = 14)
-plt.axis([1,50,0,0.008])
-plt.show()
+# N = [i for i in range(1,50)]
+# # N = [2*i -1 for i in range(3,25)]
+# for i in N:
+#     err_med = np.append(err_med,generate_erro(i,'MED'))
+#     err_mea = np.append(err_mea,generate_erro(i,'MEA'))
+#     err_meds = np.append(err_meds, generate_erro(i, 'MEDS'))
+#
+#     # err_mcm.append(generate_erro(i,'MCM'))
+#     # err_meds.append(generate_erro(i, 'MEDS'))
+#
+#     # err.append(err_mcm)
+#     # err_mcm = []
+#
+# # print(err)
+# # res = err[0]
+# # err = np.array(err)
+# # print(err)
+# # for k in range(1,10):
+# #     res += err[k]
+# #
+# # res = res /10
+# plt.figure()
+# plt.title("ERRO")
+# plt.grid()
+# plt.plot(N,err_med,label = 'MED',linewidth=2)
+# plt.plot(N,err_mea,label = 'MEA',linewidth=2)
+# plt.plot(N,err_meds,label = 'MEDS',linewidth=2)
+# # plt.plot(N,res,label = 'MCM', linestyle = "--",color = 'blue')
+# plt.xlabel("N_i",fontsize = 14)# 设置横轴标签
+# plt.ylabel("err",fontsize = 14)# 设置纵轴标签
+#     plt.legend(loc="upper right",fontsize = 14)
+# #设置刻度标记的大小
+# plt.tick_params(axis='both',labelsize = 14)
+# plt.axis([1,50,0,0.008])
+# plt.show()

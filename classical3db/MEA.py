@@ -39,12 +39,26 @@ f_max = 100
 
 # 生成一个高斯过程
 f1,c1,p1 = parameter_classical3dB('MEA',N_i,var,f_max,'rand')
-print(f1,c1)
+Tau_max = (N_i/2/f_max)# 总时长
+Tau_int = 1/(10*f_max) # 采样频率
+Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
+N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
 
-# print(Rounded_Belta(c1,f1))
+# 采样的序列
+Gaussian_Procss = np.array([])
+for i in Tau:
+     Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
+
+nfft = 128
 plt.figure()
-plt.stem(f1,c1/max(c1))
-plt.title('psd')
+plt.psd(x=Gaussian_Procss,Fs = 1/Tau_int,sides='twosided',NFFT=nfft,window=np.blackman(nfft))
+plt.show()
+# print(f1,c1)
+#
+# # print(Rounded_Belta(c1,f1))
+# plt.figure()
+# plt.stem(f1,c1/max(c1))
+# plt.title('psd')
 # plt.legend(loc="best",fontsize = 14)
 # plt.xlabel("frequency/Hz")# 设置横轴标签
 # plt.ylabel("p/w/Hz")# 设置纵轴标签

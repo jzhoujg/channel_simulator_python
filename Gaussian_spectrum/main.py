@@ -28,8 +28,9 @@ def parameter_classical( Method_type , N_i, Variance, fc, phase) :
     elif Method_type == 'MEA':
         n = np.arange(1, N_i+1)
         f_i = fc/np.sqrt(ln2)*spl.erfinv(n/N_i)
-        f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.9999999)
-        c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)
+        f_i[N_i-1] = fc/np.sqrt(ln2)*spl.erfinv(0.9999999999)
+        c_i = sigma * np.sqrt(2/N_i) * np.ones(N_i)*np.sqrt(N_i/(N_i-1))
+        c_i[N_i-1] = 0
 
     elif Method_type == 'MEDS':
         n = np.arange(1, N_i + 1)
@@ -68,29 +69,51 @@ def parameter_classical( Method_type , N_i, Variance, fc, phase) :
 
 
 var = 1
-N_i = 32
-f_max = 91
-Tau_max = N_i/2/f_max*10
-Tau_int = 0.00001
-Tau = np.arange(0,Tau_max,Tau_int)
+N_i = 20
+f_max = 50
+# Tau_max = N_i/2/f_max*10
+# Tau_int = 0.00001
+# Tau = np.arange(0,Tau_max,Tau_int)
 # 生成高斯过程
 f1,c1,p1 = parameter_classical('MEA',N_i,var,f_max,'rand')
-Gaussian_Process = np.array([])
+print(f1)
 
-for i in Tau:
-     Gaussian_Process = np.append(Gaussian_Process,sum(c1*np.cos(2*np.pi*f1*i + p1)))
-
-# plt.figure()
-# plt.plot(Tau,Gaussian_Process)
-# plt.show()
-#将序列信号变成离散的谱信号
-L = len(Gaussian_Process)# 信号长度
-N = np.power(np.ceil(np.log2(L)),2) # 下一个最近二次幂
-res = fft(Gaussian_Process,int(N))
-print(res)
-h = [i for i in range(int(N))]
-plt.plot(h[:int(N//10)],np.power(abs(res)[:int(N//10)],2)/N)
+plt.figure()
+plt.stem(f1,c1)
 plt.show()
+
+
+# # 采样
+# Tau_max = (N_i/2/f_max)# 总时长
+# Tau_int = 1/(15*f_max) # 采样频率
+# Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
+# N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
+#
+# # 采样的序列
+# Gaussian_Procss = np.array([])
+# for i in Tau:
+#      Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
+#
+# nfft = 256
+# plt.figure()
+# plt.psd(x=Gaussian_Procss,Fs = 1/Tau_int,sides='twosided',NFFT=nfft,window=np.blackman(nfft))
+# plt.show()
+# Gaussian_Process = np.array([])
+#
+# for i in Tau:
+#      Gaussian_Process = np.append(Gaussian_Process,sum(c1*np.cos(2*np.pi*f1*i + p1)))
+#
+# # plt.figure()
+# # plt.plot(Tau,Gaussian_Process)
+# # plt.show()
+# #将序列信号变成离散的谱信号
+# L = len(Gaussian_Process)# 信号长度
+# N = np.power(np.ceil(np.log2(L)),2) # 下一个最近二次幂
+# res = fft(Gaussian_Process,int(N))
+# print(res)
+# h = [i for i in range(int(N))]
+# plt.plot(h[:int(N//10)],np.power(abs(res)[:int(N//10)],2)/N)
+# plt.show()
 
 # f2,c2,p2 = parameter_classical('MEA',N_i,var,f_max,'rand',t)
 # u2 = generate_Gaussian_process(f2,c2,p2)
