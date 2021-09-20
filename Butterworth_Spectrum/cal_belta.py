@@ -58,28 +58,47 @@ def Butterworth_Belta(ci,fi,var):
 
 
 var = 1
-N_i = 50
+N_i = 20
 f_max = 100
+f1, c1, p1 = parameter_butterworth('MEA', N_i, var, f_max, 'rand', 2)
+# plt.figure()
+# plt.stem(f1,c1)
+# plt.show()
+
+Tau_max = (N_i/2/f_max)# 总时长
+Tau_int = 1/(12*f_max) # 采样频率
+Tau = np.arange(0,Tau_max,Tau_int) # 采样时刻
+N = int(Tau_max/Tau_int) # 采样点数（采样的序列的长度）
+
+# 采样的序列
+Gaussian_Procss = np.array([])
+for i in Tau:
+     Gaussian_Procss = np.append(Gaussian_Procss,sum(c1*np.cos(2*np.pi*f1*i+p1)))
+
+nfft = 128
+plt.figure()
+plt.psd(x=Gaussian_Procss,Fs = 1/Tau_int,sides='twosided',NFFT=nfft,window=np.blackman(nfft))
+plt.show()
 
 # 生成一个高斯过程
 # f1,c1,p1 = parameter_butterworth('MEA',N_i,var,f_max,'rand',1)
 # print(Butterworth_Belta(c1,f1,var),52.27232008770633)
 
 
-RES = []
-N = [i for i in range(5,N_i)]
-for j in N:
-     f1, c1, p1 = parameter_butterworth('MEA', j, var, f_max, 'rand', 3)
-     RES.append(Butterworth_Belta(c1,f1,var))
-std = 53.821392087678994* np.ones(len(N))
-RES = np.array(RES)
-plt.figure()
-plt.plot(N,std/100,label = 'standard')
-plt.plot(N,RES/100,label = 'MEA',linestyle = '--')
-plt.title("Third -Order Butterworth Spectrum")
-plt.legend(loc="best",fontsize = 14)
-plt.xlabel('N')
-plt.show()
+# RES = []
+# N = [i for i in range(5,N_i)]
+# for j in N:
+#      f1, c1, p1 = parameter_butterworth('MEA', j, var, f_max, 'rand', 3)
+#      RES.append(Butterworth_Belta(c1,f1,var))
+# std = 53.821392087678994* np.ones(len(N))
+# RES = np.array(RES)
+# plt.figure()
+# plt.plot(N,std/100,label = 'standard')
+# plt.plot(N,RES/100,label = 'MEA',linestyle = '--')
+# plt.title("Third -Order Butterworth Spectrum")
+# plt.legend(loc="best",fontsize = 14)
+# plt.xlabel('N')
+# plt.show()
 
 
 

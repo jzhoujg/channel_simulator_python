@@ -6,12 +6,12 @@ from scipy.fftpack import fft
 var = 1
 fd = 100
 pi = np.pi
-M = 3
+M = 2
 f = np.arange(-fd,fd)
 S_uiui = np.power(fd,2*M)/(np.power(fd,2*M)+np.power(f,2*M))
 
 plt.figure()
-plt.plot(f,S_uiui,label = 'M = 3')
+plt.plot(f,S_uiui,label = 'M = 2')
 
 plt.title("Butterworth Doppler Spectrum ")
 plt.xlabel("frequency/Hz")# 设置横轴标签
